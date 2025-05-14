@@ -11,13 +11,12 @@ use App\Http\Controllers\RevisorController;
 Route::get('/', [PublicController::class, 'homepage'])->name('homepage');
 Route::get('/careers', [PublicController::class, 'careers'])->name('careers');
 Route::post('/careers/submit', [PublicController::class, 'careersSubmit'])->name('careers.submit');
-Route::middleware('throttle:article-search')->get('/article/search', [ArticleController::class, 'search']);
 
 Route::get('/articles/index', [ArticleController::class, 'index'])->name('articles.index');
 Route::get('/articles/show/{article:slug}', [ArticleController::class, 'show'])->name('articles.show');
 Route::get('/articles/category/{category}', [ArticleController::class, 'byCategory'])->name('articles.byCategory');
 Route::get('/articles/user/{user}', [ArticleController::class, 'byUser'])->name('articles.byUser');
-Route::get('/articles/search', [ArticleController::class, 'articleSearch'])->name('articles.search');
+Route::get('/articles/search', [ArticleController::class, 'articleSearch'])->name('articles.search')->middleware('throttle:articles.search');
 
 // Writer routes
 Route::middleware('writer')->group(function(){
