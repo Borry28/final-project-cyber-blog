@@ -49,6 +49,36 @@ class FortifyServiceProvider extends ServiceProvider
             });
         });
 
+        // rate limit for registration
+        RateLimiter::for('register', function (Request $request) {
+            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
+            Log::info("L'utente $throttleKey ha effettuato un tentativo di registrazione.");
+            return Limit::perMinute(5)->by($throttleKey)->response(function () use ($throttleKey) {
+                // Log the blocked IP
+                \Log::warning("Blocked IP: $throttleKey due to too many requests.");
+        
+                // Custom response when rate limit is exceeded
+                return response()->json([
+                    'message' => 'Too many requests. Please try again later.'
+                ], 429);
+            });
+        });
+
+        // rate limit for logout
+        RateLimiter::for('logout', function (Request $request) {
+            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
+            Log::info("L'utente $throttleKey ha effettuato un tentativo di logout.");
+            return Limit::perMinute(5)->by($throttleKey)->response(function () use ($throttleKey) {
+                // Log the blocked IP
+                \Log::warning("Blocked IP: $throttleKey due to too many requests.");
+        
+                // Custom response when rate limit is exceeded
+                return response()->json([
+                    'message' => 'Too many requests. Please try again later.'
+                ], 429);
+            });
+        });
+
         RateLimiter::for('two-factor', function (Request $request) {
             return Limit::perMinute(5)->by($request->session()->get('login.id'));
         });
