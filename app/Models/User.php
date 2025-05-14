@@ -51,4 +51,14 @@ class User extends Authenticatable
     public function articles(){
         return $this->hasMany(Article::class);
     }
-}
+
+    public function isAdmin(){
+        return $this->is_admin;
+    }
+    public function isRevisor(){
+        return $this->is_revisor;
+    }
+    public function isWriter(){
+        return $this->is_writer;
+    }
+};

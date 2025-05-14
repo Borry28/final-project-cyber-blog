@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 
@@ -21,6 +22,12 @@ class HttpService
     public function getRequest($url)
     {
         $parsedUrl = parse_url($url);
+        
+        // Check for admin privileges
+        if ($parsedUrl['host'] === 'internal.finance' && !auth()->user()->isAdmin()) {
+            \log::warning('Access denied to internal.finance by non-admin user: ' . auth()->user()->email);
+            return 'Access denied: insufficient privileges';
+        }
 
         // Validate protocol
         if (!in_array($parsedUrl['scheme'], $this->allowedProtocols)) {

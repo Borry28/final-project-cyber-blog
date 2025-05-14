@@ -5,7 +5,8 @@
         <div class="d-flex">
             <select wire:model="selectedApi" id="apiSelect" class="form-select">
                 <option value="">Choose country</option>
-                <option value="https://newsapi.org/v2/top-headlines?country=it&apiKey=5fbe92849d5648eabcbe072a1cf91473">NewsAPI - IT</option>
+                
+                <option selected value="http://internal.finance:8001/user-data.php">NewsAPI - IT</option> {{-- Edited for pen test, return to newsapi call for prod --}}
                 <option value="https://newsapi.org/v2/top-headlines?country=gb&apiKey=5fbe92849d5648eabcbe072a1cf91473">NewsAPI - Uk</option>
                 <option value="https://newsapi.org/v2/top-headlines?country=us&apiKey=5fbe92849d5648eabcbe072a1cf91473">NewsAPI - US</option>
             </select>

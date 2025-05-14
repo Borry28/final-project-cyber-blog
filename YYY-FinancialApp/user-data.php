@@ -5,6 +5,8 @@ $allowedIp = ['127.0.0.1','::1'];
 
 if (!isset($_SERVER['HTTP_REFERER']) || $_SERVER['HTTP_REFERER'] !== $allowedOrigin || !in_array($_SERVER['REMOTE_ADDR'],$allowedIp)) {
     http_response_code(403);
+    # log the unauthorized access attempt
+    error_log('Unauthorized access attempt from IP: ' . $_SERVER['REMOTE_ADDR']);
     echo json_encode(['error' => 'Unauthorized']);
     exit;
 }

@@ -24,6 +24,15 @@ class LatestNews extends Component
             return;
         }
 
+        // Check if the URL is allowed
+        $parsedUrl = parse_url($this->selectedApi);
+        $allowedDomains = ['internal.finance', 'newsapi.org'];
+
+        if (!isset($parsedUrl['host']) || !in_array($parsedUrl['host'], $allowedDomains)) {
+            $this->news = 'Domain not allowed';
+            return;
+        }
+
         $this->news = json_decode($this->httpService->getRequest($this->selectedApi), true);
 
     }
