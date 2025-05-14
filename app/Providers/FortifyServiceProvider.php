@@ -33,6 +33,27 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
+        RateLimiter::for('article-search', function (Request $request) {
+            $ipAddress = $request->ip();
+
+            // Check if the IP is already blocked
+            if (Cache::has("blocked:$ipAddress")) {
+                abort(429, "Too many requests. Please try again later.");
+            }
+
+            // Define the rate limit - 10 requests per minute per IP
+            $rateLimit = Limit::perMinute(20)->by($ipAddress);
+
+            // Block the IP for 10 min if limit is exceeded
+            if ($rateLimit->tooManyAttempts()) {
+                // log the blocked IP
+                \Log::warning("Blocked IP: $ipAddress due to too many requests.");
+                Cache::put("blocked:$ipAddress", true, now()->addMinutes(10));
+            }
+
+            return $rateLimit;
+        });
+
         RateLimiter::for('login', function (Request $request) {
             $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
 
