@@ -28,6 +28,13 @@ class ArticleController extends Controller implements HasMiddleware
     public function index()
     {
         $articles = Article::where('is_accepted', true)->orderBy('created_at', 'desc')->get();
+
+        $articles->each(function($article) {
+            $article->body = strip_tags($article->body);
+            $article->subtitle = strip_tags($article->subtitle);
+            $article->title = strip_tags($article->title);
+        });
+
         return view('articles.index', compact('articles'));
     }
 
@@ -52,6 +59,12 @@ class ArticleController extends Controller implements HasMiddleware
             'category' => 'required',
             'tags' => 'required'
         ]);
+
+        // sanitize from XSS
+        $request->title = strip_tags($request->title);
+        $request->subtitle = strip_tags($request->subtitle);
+        $request->body = strip_tags($request->body);
+        $request->category = strip_tags($request->category);
 
         $article = Article::create([
             'title' => $request->title,
@@ -86,6 +99,11 @@ class ArticleController extends Controller implements HasMiddleware
      */
     public function show(Article $article)
     {
+        // sanitize from XSS
+        $article->body = strip_tags($article->body);
+        $article->subtitle = strip_tags($article->subtitle);
+        $article->title = strip_tags($article->title);
+
         return view('articles.show', compact('article'));
     }
 
@@ -113,6 +131,11 @@ class ArticleController extends Controller implements HasMiddleware
             'category' => 'required',
             'tags' => 'required'
         ]);
+
+        // sanitize from XSS
+        $request->title = strip_tags($request->title);
+        $request->subtitle = strip_tags($request->subtitle);
+        $request->body = strip_tags($request->body);
 
         $article->update([
             'title' => $request->title,
@@ -178,6 +201,13 @@ class ArticleController extends Controller implements HasMiddleware
     public function articleSearch(Request $request){
         $query = $request->input('query');
         $articles = Article::search($query)->where('is_accepted', true)->orderBy('created_at', 'desc')->get();
+
+        $articles->each(function($article) {
+            $article->body = strip_tags($article->body);
+            $article->subtitle = strip_tags($article->subtitle);
+            $article->title = strip_tags($article->title);
+
+        });
         return view('articles.search-index', compact('articles', 'query'));
     }
 }

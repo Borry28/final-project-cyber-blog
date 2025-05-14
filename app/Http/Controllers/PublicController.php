@@ -22,6 +22,13 @@ class PublicController extends Controller implements HasMiddleware
     public function homepage()
     {
         $articles = Article::where('is_accepted', true)->orderBy('created_at', 'desc')->take(4)->get();
+
+        $articles->each(function($article) {
+            $article->body = strip_tags($article->body);
+            $article->subtitle = strip_tags($article->subtitle);
+            $article->title = strip_tags($article->title);
+        });
+        
         return view('welcome', compact('articles'));
     }
 
